@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<meta charset="utf-8" name="viewport" content="width=device-width">
+<html>
+    <head>
+        <title>LED調光</title>
+        <style type="text/css">
+            body {
+                text-align: center;
+                background-color: #3A6EA5;
+            }
+            div {
+                background-color: #008080;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div>
+        <p>
+            <h3>明るさ:<span id="brightness_value"></span></h3>
+            <input id="brightness" type="range" min="1" max="100" step="1" value="_brightness_">
+        </p>
+        <p>
+            <h3>流れる速度:<span id="speed_value"></span></h3>
+            <input id="speed" type="range" min="1" max="10" step="1" value="_speed_">
+        </p>
+        <p>
+            <h3>色</h3>
+            <input id="onecolor" name="one_color" type="radio" _one_>単色
+            <input id="rainbow" name="one_color" type="radio" _rainbow_>レインボー
+            </br>
+            <input id="color" type="color" value="#FFFFFF">
+        </p>
+        </div>
+        <script>
+            function onecolor_change(event) {send_data(event.target.id, event.currentTarget.value);}
+            function color_change(event) {
+                var data = event.currentTarget.value.toString().substring(1);
+                send_data(event.target.id, data);
+            }
+            function send_data(object_name, data) {
+                $.get("/data?" + object_name + "=" + data);
+                console.log(object_name + ":" + data);
+            }
+
+            var obj_brightness = document.getElementById("brightness");
+            var target_brightness = document.getElementById("brightness_value");
+            target_brightness.innerHTML = obj_brightness.value;
+            obj_brightness.oninput = function() {
+                obj_brightness.value = this.value;
+                target_brightness.innerHTML = this.value;
+                send_data("brightness", this.value);
+            }
+
+            var obj_speed = document.getElementById("speed");
+            var target_speed = document.getElementById("speed_value");
+            target_speed.innerHTML = obj_speed.value;
+            obj_speed.oninput = function() { 
+                obj_speed.value = this.value;
+                target_speed.innerHTML = this.value;
+                send_data("speed", this.value);
+            }
+
+            var obj_one_color = document.getElementById("onecolor");
+            obj_one_color.addEventListener("change", onecolor_change);
+
+            var obj_reinbow = document.getElementById("rainbow");
+            obj_reinbow.addEventListener("change", onecolor_change);
+
+            var obj_color = document.getElementById("color");
+            obj_color.addEventListener("change", color_change);
+        </script>
+    </body>
+</html>
